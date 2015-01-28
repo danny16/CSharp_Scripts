@@ -1,0 +1,45 @@
+System.Data.OleDb.OleDbDataAdapter olead = new System.Data.OleDb.OleDbDataAdapter();
+        System.Data.DataTable dt = new DataTable();
+
+        olead.Fill(dt, this.Variables.ODataSet);
+
+        try
+        {
+            int myNum;
+            DateTime myDate;
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                Output0Buffer.AddRow();
+
+                Output0Buffer.CompanyKey = int.TryParse(dr["CompanyKey"].ToString(), out myNum) ? myNum : 0;
+                Output0Buffer.OrdertypeKey = int.TryParse(dr["OrderTypeKey"].ToString(), out myNum) ? myNum : 0;  //(int)dr["OrderTypeKey"];
+                Output0Buffer.OrderLineNo = int.TryParse(dr["OrderLineNo"].ToString(), out myNum) ? myNum : 0;  //(int)dr["OrderLineNo"];
+                Output0Buffer.Duedate = int.TryParse(dr["duedate"].ToString(), out myNum) ? myNum : 0;  //(int)dr["duedate"];
+                Output0Buffer.Insightdate = int.TryParse(dr["insightdate"].ToString(), out myNum) ? myNum : 0;  //(int)dr["insightdate"];
+                Output0Buffer.ArticleTypeKey = int.TryParse(dr["ArticleTypeKey"].ToString(), out myNum) ? myNum : 0;  //(int)dr["ArticleTypeKey"];
+                Output0Buffer.SBOrderLineNo = int.TryParse(dr["SBOrderLineNo"].ToString(), out myNum) ? myNum : 0;
+                Output0Buffer.Newcost = (decimal)dr["newcost"];
+                Output0Buffer.ProductType = dr["ProductType"].ToString();
+                Output0Buffer.OrderNo = dr["OrderNo"].ToString();
+                Output0Buffer.Custgroup = dr["CustomerGroup"].ToString();
+                Output0Buffer.SBOrderNo = dr["SBOrderNo"].ToString();
+                Output0Buffer.Orderlink = dr["orderlink"].ToString();
+                Output0Buffer.pickrelease = DateTime.TryParse(dr["pickrelease"].ToString(), out myDate) ? myDate : DateTime.MinValue;
+                Output0Buffer.pickconfirm = DateTime.TryParse(dr["pickconfirm"].ToString(), out myDate) ? myDate : DateTime.MinValue;
+                Output0Buffer.pickqty = (decimal)dr["pickqty"];
+            }
+        }
+        catch (Exception ex)
+        {
+            bool pbCancel = false;
+            this.ComponentMetaData.FireError(-1, "", "Outer EX : " + ex.Message.ToString(),"",0,out pbCancel);
+
+            while (ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+                this.ComponentMetaData.FireError(-1, "", "Inneer EX : " + ex.Message.ToString(), "", 0, out pbCancel);
+            }
+
+      }
+
