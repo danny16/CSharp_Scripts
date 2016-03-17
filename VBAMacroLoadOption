@@ -1,0 +1,51 @@
+Option Explicit
+Option Base 1
+
+Public Sub RunProc()
+    'NOTE: Change server name below
+    
+    On Error GoTo Err_mygetdata
+
+    Dim cn As ADODB.Connection
+    Dim cmd As ADODB.Command
+    Dim ConnString As String
+    'Change server name next to "Data Source="
+    ConnString = "Provider=SQLOLEDB.1;Data Source=BI360DB; Initial Catalog=BI360DW;Integrated Security=SSPI;"
+
+    Set cn = New Connection
+    Set cmd = New Command
+
+    cn.ConnectionString = ConnString
+    cn.Open
+    
+    If Range("D5") = "Full Reload" Then
+    cmd.ActiveConnection = cn
+    cmd.CommandType = adCmdStoredProc
+    cmd.CommandText = "RunLoad"
+    cmd.Execute
+
+    Set cn = Nothing
+    Set cmd = Nothing
+    End If
+       
+    If Range("D5") = "Current Year Reload" Then
+    cmd.ActiveConnection = cn
+    cmd.CommandType = adCmdStoredProc
+    cmd.CommandText = "RunLoad1"
+    cmd.Execute
+
+    Set cn = Nothing
+    Set cmd = Nothing
+    End If
+    
+    MsgBox "Data load running. Please wait 10 minutes before running this process again.", vbOKOnly, " Data Load Process"
+    
+    Exit Sub
+    
+Err_mygetdata:
+    MsgBox "Error: " & Err.Description & vbCrLf & vbCrLf & "Process failed, data has NOT been loaded!" & vbCrLf & vbCrLf & "Contact IT for resolution.", vbCritical, "Data Load Error"
+    Set cn = Nothing
+    Set cmd = Nothing
+
+End Sub
+
